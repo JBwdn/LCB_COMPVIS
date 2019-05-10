@@ -5,7 +5,7 @@ import cv2
 
 
 # Load the image, clone it for output & convert it to grayscale:
-image = cv2.imread("images/ball_test2.jpg")
+image = cv2.imread("images/ball_test1.jpg")
 output = image.copy()
 gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
 
@@ -15,7 +15,7 @@ circles = cv2.HoughCircles(
     blur,
     cv2.HOUGH_GRADIENT,
     1,  # Inverse ratio of acc to image resolution (2 = 1/2)
-    30,  # Min distance between the center of circles
+    100,  # Min distance between the center of circles
     param1=75,  # Upper threshold passed to canny edge detector
     param2=75,  # Accumulator threshold
     minRadius=1,
