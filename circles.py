@@ -16,7 +16,7 @@ circles = cv2.HoughCircles(
     cv2.HOUGH_GRADIENT,
     1,  # Inverse ratio of acc to image resolution (2 = 1/2)
     30,  # Min distance between the center of circles
-    param1=75,  # Upper threshold passed to canny detector
+    param1=75,  # Upper threshold passed to canny edge detector
     param2=75,  # Accumulator threshold
     minRadius=1,
     maxRadius=500
