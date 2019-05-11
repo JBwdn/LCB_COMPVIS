@@ -42,7 +42,7 @@ def region_of_interest(image):
     return masked_image
 
 
-image_PIL = reduce_resolution('test_image2.png')
+image_PIL = reduce_resolution('images/road_test2.png')
 image_opencv = cv2.cvtColor(np.array(image_PIL), cv2.COLOR_RGB2BGR)
 lane_image = np.copy(image_opencv)
 canny = canny(lane_image)
