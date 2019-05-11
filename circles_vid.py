@@ -16,10 +16,10 @@ def find_circles(prep_frame):
         cv2.HOUGH_GRADIENT,
         1,
         100,
-        param1=50,
-        param2=30,
-        minRadius=1,
-        maxRadius=100
+        param1=30,
+        param2=20,
+        minRadius=50,
+        maxRadius=70
         )
     return circle_map
 
