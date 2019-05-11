@@ -5,15 +5,14 @@ import cv2
 
 
 def prepare_frame(frame):
-    output = frame.copy()
     grey_frame = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
     blur_frame = cv2.GaussianBlur(grey_frame, (7, 7), 0)
-    return blur_frame, output
+    return blur_frame
 
 
-def find_circles(frame, output):
-    circles_frame = cv2.HoughCircles(
-        frame,
+def find_circles(prep_frame):
+    circle_map = cv2.HoughCircles(
+        prep_frame,
         cv2.HOUGH_GRADIENT,
         1,
         100,
@@ -22,30 +21,35 @@ def find_circles(frame, output):
         minRadius=1,
         maxRadius=100
         )
-    if circles_frame is not None:
-        circles_frame = np.round(circles_frame[0, :]).astype("int")
-        for (x, y, r) in circles_frame:
+    return circle_map
+
+
+def annotate_circles(clean_frame, circle_map):
+    labled_frame = clean_frame.copy()
+    if circle_map is not None:
+        circle_map = np.round(circle_map[0, :]).astype("int")
+        for (x, y, r) in circle_map:
             cv2.circle(
-                output,
+                labled_frame,
                 (x, y),
                 r,
                 (0, 128, 255),
                 3
                 )
             cv2.rectangle(
-                output,
+                labled_frame,
                 (x - r, y - r),
                 (x + r, y + r),
                 (0, 128, 255),
                 3
                 )
-    return output
+    return labled_frame
 
 
-def track_circles(film):
-    frame, output = prepare_frame(film)
-    find_circles(frame, output)
-    return output
+def map_circles(clean_frame):
+    prep_frame = prepare_frame(clean_frame)
+    circle_map = find_circles(prep_frame)
+    return annotate_circles(clean_frame, circle_map)
 
 
 def main(path):
@@ -56,8 +60,8 @@ def main(path):
             movie.release()
             break
         else:
-            output = track_circles(frame)
-            cv2.imshow("OUTPUT", output)
+            labled_frame = map_circles(frame)
+            cv2.imshow("OUTPUT", labled_frame)
     return
 
 
