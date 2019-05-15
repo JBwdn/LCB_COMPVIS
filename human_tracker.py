@@ -1,7 +1,6 @@
 #!/Users/Jake/anaconda3/bin/python
-# TODO: stack figure and face annotations for output
+# TODO: Function to search for faces only within detected figures
 import cv2
-import numpy as np
 
 
 def load_models():
@@ -19,48 +18,33 @@ def prepare_frame(frame):
     return grey_frame
 
 
-def map_faces(frame, face_cascade, eye_cascade):
-    labled_frame = frame.copy()
+def map_faces(frame, face_cascade, scaleFactor):
     grey_frame = prepare_frame(frame)
-    face_map = face_cascade.detectMultiScale(grey_frame, 1.3, 5)
-    for (fx, fy, fw, fh) in face_map:
-        cv2.rectangle(
-            labled_frame,
-            (fx, fy),
-            (fx+fw, fy+fh),
-            (255, 0, 0),
-            2
-            )
-        face_colour = labled_frame[fy:fy+fh, fx:fx+fw]
-        face_gray = grey_frame[fy:fy+fh, fx:fx+fw]
-        eyes = eye_cascade.detectMultiScale(face_gray, 1.3, 5)
-        for (ex, ey, ew, eh) in eyes:
-            cv2.rectangle(
-                face_colour,
-                (ex, ey),
-                (ex+ew, ey+eh),
-                (0, 255, 0),
-                2
-                )
+    face_map = face_cascade.detectMultiScale(grey_frame, scaleFactor, 5)
+    return face_map
+
+
+def map_figures(frame, figure_cascade, scaleFactor):
+    grey_frame = prepare_frame(frame)
+    figure_map = figure_cascade.detectMultiScale(grey_frame, scaleFactor, 5)
+    return figure_map
+
+
+def annotate_features(clean_frame, map_list):
+    labled_frame = clean_frame.copy()
+    for feature_map in map_list:
+        if feature_map is not None:
+            for (fx, fy, fw, fh) in feature_map:
+                cv2.rectangle(
+                    labled_frame,
+                    (fx, fy),
+                    (fx+fw, fy+fh),
+                    (160, 32, 240),
+                    1)
     return labled_frame
 
 
-def map_figures(frame, figure_cascade):
-    labled_frame = frame.copy()
-    grey_frame = prepare_frame(frame)
-    figure_map = figure_cascade.detectMultiScale(grey_frame, 1.3, 5)
-    for (fx, fy, fw, fh) in figure_map:
-        cv2.rectangle(
-            labled_frame,
-            (fx, fy),
-            (fx+fw, fy+fh),
-            (255, 0, 0),
-            2
-            )
-    return labled_frame
-
-
-def main(path):
+def main(path, scaleFactor):
     face_cascade, eye_cascade, figure_cascade = load_models()
     movie = cv2.VideoCapture(path)
     while movie.isOpened():
@@ -69,17 +53,12 @@ def main(path):
             movie.release()
             break
         else:
-            A = map_figures(
-                frame,
-                figure_cascade)
-            B = map_faces(
-                frame,
-                face_cascade,
-                eye_cascade)
-            labled_frame = np.hstack([A, B])
+            figures = map_figures(frame, figure_cascade, scaleFactor)
+            faces = map_faces(frame, face_cascade, scaleFactor)
+            labled_frame = annotate_features(frame, [figures, faces])
             cv2.imshow("OUTPUT", labled_frame)
-    return
+    return labled_frame
 
 
 if __name__ == "__main__":
-    main("videos/runners_test1.mp4")
+    main("videos/runners_test1.mp4", 1.3)
