@@ -6,11 +6,9 @@ import cv2
 def load_models():
     face_cascade = cv2.CascadeClassifier(
         "models/haarcascade_frontalface_default.xml")
-    eye_cascade = cv2.CascadeClassifier(
-        "models/haarcascade_eye.xml")
     figure_cascade = cv2.CascadeClassifier(
         "models/haarcascade_fullbody.xml")
-    return face_cascade, eye_cascade, figure_cascade
+    return face_cascade, figure_cascade
 
 
 def prepare_frame(frame):
@@ -45,7 +43,7 @@ def annotate_features(clean_frame, map_list):
 
 
 def main(path, scaleFactor):
-    face_cascade, eye_cascade, figure_cascade = load_models()
+    face_cascade, figure_cascade = load_models()
     movie = cv2.VideoCapture(path)
     while movie.isOpened():
         retval, frame = movie.read()
@@ -57,8 +55,7 @@ def main(path, scaleFactor):
             faces = map_faces(frame, face_cascade, scaleFactor)
             labled_frame = annotate_features(frame, [figures, faces])
             cv2.imshow("OUTPUT", labled_frame)
-    return labled_frame
 
 
 if __name__ == "__main__":
-    main("videos/runners_test1.mp4", 1.3)
+    main("videos/runners_test1.mp4", 1.05)
