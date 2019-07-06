@@ -34,7 +34,11 @@ class document:
 
     def preprocess(self):
         if args["preprocess"] == "thresh":
-            self.processed = cv2.threshold(self.grey,0, 255, cv2.THRESH_BINARY | cv2.THRESH_OTSU)[1]
+            self.processed = cv2.threshold(
+                    self.grey,
+                    0,
+                    255,
+                    cv2.THRESH_BINARY | cv2.THRESH_OTSU)[1]
         elif args["preprocess"] == "blur":
             self.processed = cv2.medianBlur(self.grey, 3)
 
@@ -49,6 +53,7 @@ class document:
             self.tesseract()
         elif args["engine"] == "NN":
             pass
+
 
     def tesseract(self):
         # Write image to temporary file:
