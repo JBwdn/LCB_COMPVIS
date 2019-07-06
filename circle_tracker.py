@@ -1,5 +1,6 @@
 #!/Users/Jake/anaconda3/bin/python
 
+from sys import argv
 import numpy as np
 import cv2
 
@@ -66,4 +67,9 @@ def main(path):
 
 
 if __name__ == "__main__":
-    main("videos/ball_test1.avi")
+    if len(argv) == 1:
+        print("Tracking circles in example video...")
+        main("videos/ball_test1.avi")
+    if len(argv) == 2:
+        print(f"Tracking circles in: {argv[1]}")
+        main(argv[1])

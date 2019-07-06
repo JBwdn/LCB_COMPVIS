@@ -1,7 +1,7 @@
 #!/Users/Jake/anaconda3/bin/python
 # TODO: Function to search for faces only within detected figures
 import cv2
-
+from sys import argv
 
 def load_models():
     face_cascade = cv2.CascadeClassifier(
@@ -58,4 +58,11 @@ def main(path, scaleFactor):
 
 
 if __name__ == "__main__":
-    main("videos/runners_test1.mp4", 1.05)
+    if len(argv) == 1:
+        main("videos/runners_test1.mp4", 1.10)
+    if len(argv) == 2:
+        print(f"Tracking figures in: {argv[1]}")
+        main(argv[1], 1.10)
+    if len(argv) == 3:
+        print(f"Tracking figures in: {argv[1]} With a scale factor of: {argv[2]}")
+        main(argv[1], float(argv[2]))
