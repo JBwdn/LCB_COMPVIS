@@ -39,7 +39,7 @@ class document:
             self.processed = cv2.medianBlur(self.grey, 3)
 
 
-    def show(self):
+    def show_image(self):
         cv2.imshow("TEST", self.processed)
         cv2.waitKey(0)
 
@@ -64,7 +64,7 @@ def main():
     doc = document()
     doc.preprocess()
     doc.parse_text()
-    doc.show()
+    doc.show_image()
 
 if __name__ == "__main__":
     main()
